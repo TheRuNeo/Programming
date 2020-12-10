@@ -1,0 +1,47 @@
+# include <iostream>
+using namespace std;
+
+int main()
+{
+    char x;
+    float a, b;
+
+    cout << "Enter operator either +(addition) or -(subtraction) or *(multiplication) or /(division) or @(integral division) or %(integral division remainder): ";
+    cin >> x;
+
+    cout << "Enter two operands: ";
+    cin >> a >> b;
+
+    switch(op)
+    {
+        case '+':
+            cout << a + b;
+            break;
+
+        case '-':
+            cout << a - b;
+            break;
+
+        case '*':
+            cout << a * b;
+            break;
+
+        case '/':
+            cout << a / b;
+            break;
+
+        case '@':
+            cout << (int)a / (int)b;
+            break;
+
+        case '%':
+            cout << (int)a % (int)b;
+            break;
+
+        default:
+            cout << "Calculation complete";
+            break;
+    }
+
+    return 0;
+}
