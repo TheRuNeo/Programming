@@ -8,7 +8,7 @@
 using namespace std;
  
 bool isalpha_rus(char c) {
-    return c >= 'а' && c <= 'я' || c >= 'А' && c <= 'Я'
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
         || c == 'ё' || c == 'Ё' || c=='-'; 
 };
  
