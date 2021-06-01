@@ -1,38 +1,88 @@
 #include <iostream>
-#include <string>
-#include <map>
 #include <fstream>
-#include <Windows.h>
+#include <string>
+#include <time.h>
+#include <map>
+#include <vector>
+#include <algorithm>
 using namespace std;
  
-int main()
+bool isalpha_rus(char c) {
+    return c >= 'а' && c <= 'я' || c >= 'А' && c <= 'Я'
+        || c == 'ё' || c == 'Ё' || c=='-'; 
+};
+ 
+class GreaterSize
 {
-    SetConsoleCP(1251);
-    SetConsoleOutputCP(1251);
-    map <string, int> words;
-    ifstream in("in.txt");
-    string word;
-    while (in >> word)  
-        words[word]++;
-    ofstream out("out.txt");
-    int count = 0;
-    out << "Words count:" << endl;
-    for (map <string, int>::iterator cur = words.begin(); cur != words.end(); cur++)    {       
-        bool flag(true);
-        for (auto &sym : cur->first)
-            if (sym < -64 || sym > -1)
-                flag = false;
-        if (flag)
-            out << (*cur).first << ": " << (*cur).second << endl; count += (*cur).second;
+public:
+    GreaterSize(){}
+    bool operator()(const string& s1, const string& s2) const
+    {
+        return s2.size() < s1.size();
     }
-    out << "Words percenc:" << endl;
-    for (map <string, int>::iterator cur = words.begin(); cur != words.end(); cur++)    {
-        bool flag(true);
-        for (auto &sym : cur->first)
-            if (sym < -64 || sym > -1)
-                flag = false;
-        if (flag)
-            out << (*cur).first << ": " << (static_cast<float>((*cur).second) / count) * 100 << "%" << endl;
+};
+ 
+/*struct S
+{
+    std::string str;
+    int a;
+};
+ 
+class CompareStr
+{
+public:
+    bool operator()(const S& s1, const S& s2) const
+    {
+        return s1.str < s2.str;
     }
+};
+ 
+class CompareA
+{
+public:
+    bool operator()(const S& s1, const S& s2) const
+    {
+        return s1.a < s2.a;
+    }
+};
+*/
+ 
+int main() {
+    setlocale(LC_ALL, "rus");
+    time_t t = time(NULL);
+    //map<string, size_t> words;
+    map<string, size_t, GreaterSize> words;
+    string w;
+    fstream file("file.txt"), out_file("out_file.txt", fstream::out), out_file1("out_file1.txt", fstream::out);
+    int it = file.get();
+    /*if (!file.is_open()) {
+        file.open("file.txt", fstream::out);
+        return 0;
+    }*/
+    while (it != EOF) {
+        while (it != EOF && isalpha_rus(it)) {
+            w.push_back(it); // Добавление элемента в конец 
+            it = file.get();
+        }
+        while (it != EOF  && !isalpha_rus(it = file.get()));
+        if (!w.empty())
+            ++words[w];
+        w.clear();
+    }
+    if (!words.empty())
+    for (auto &_pair : words)
+        out_file << _pair.first << " = " << _pair.second << endl;
+    file.close(); out_file.close();
+    
+    vector<pair<string, size_t>> line(words.begin(), words.end());
+    //sort(line.begin(), line.end());
+    //sort(line.begin(), line.end(), CompareStr());   //Сортировка по строкам
+    //sort(words.begin(), words.end(), CompareA());   //Сортировка по целым
+    for (auto &_pair : line)
+        out_file1 << _pair.first << " = " << _pair.second << endl;
+    out_file1.close();
+ 
+    cout << "Время:" << (time(NULL) - t) << endl;
+    system("pause");
     return 0;
 }
